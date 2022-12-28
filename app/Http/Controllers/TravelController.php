@@ -55,8 +55,8 @@ class TravelController extends Controller
                 $step = $this->makeStepObject($stepAttributes);
                 $travel->steps()->save($step);
                 if ($step->type === "avion") {
-                    //Table per type
-                    $this->tptMapping($step);
+                    //Table per hierarchy
+                    $this->tphMapping($step);
                 }
             }
         }
@@ -84,8 +84,9 @@ class TravelController extends Controller
 
     /**
      * Map the connexion with plane step optionals parameters
+     * https://stackoverflow.com/questions/190296/how-do-you-effectively-model-inheritance-in-a-database#answer-190306
      */
-    protected function tptMapping(Step $step) {
+    protected function tphMapping(Step $step) {
         $planeStep = new PlaneStep();
         $planeStep->bagage_drop = $step->bagage_drop ?? null;
         $planeStep->gateway = $step->gateway ?? 'NA';
