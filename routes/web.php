@@ -15,9 +15,7 @@ use App\Http\Controllers\StepController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::redirect('/', '/travels');
 
 /*
     Travels
