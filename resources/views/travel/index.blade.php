@@ -13,10 +13,11 @@
 <body>
 <div class="box">
     <section class="section">
-    <h1 class="title">Tous mes voyages ...</h1>
-    <h2 class="subtitle">
-        Ici figure la liste de mes <strong>voyages</strong>, et certaines de leurs informations.
-    </h2>
+        <h1 class="title">Tous mes voyages ...</h1>
+        <h2 class="subtitle">
+            Ici figure la liste de mes <strong>voyages</strong>, et certaines de leurs informations.
+        </h2>
+        <a class="button is-link" href="{{ url('travels/add') }}">Ajouter un voyage</a>
     </section>
 </div>
 
@@ -33,7 +34,7 @@
             <section class="hero is-primary">
             <div class="hero-body" id="travel-<?= $travel->id; ?>">
                 <p class="title">
-                    <?= $travel->name; ?>
+                    {{ $travel->name }}
                 </p>
                 <table class="table">
                     <thead>
@@ -49,16 +50,17 @@
                     <tbody>
                     <?php foreach($travel->steps as $step): ?>
                         <tr>
-                            <th><?= $step->type; ?></th>
-                            <td><?= $step->transport_number; ?></td>
-                            <td><?= $step->departure; ?></td>
-                            <td><?= $step->arrival; ?></td>
-                            <td><?= $step->seat; ?></td>
+                            <th>{{ $step->type; }}</th>
+                            <td>{{ $step->transport_number; }}</td>
+                            <td>{{ $step->departure; }}</td>
+                            <td>{{ $step->arrival; }}</td>
+                            <td>{{ $step->seat; }}</td>
                             <td>
                                 <?php foreach($step->plane_step as $planeStep): ?>
-                                    <?= $planeStep?->bagage_drop; ?>
-                                    <?= $planeStep?->gateway; ?>
+                                    {{ $planeStep?->bagage_drop; }}
+                                    {{ $planeStep?->gateway; }}
                                 <?php endforeach; ?>
+                                <a class="button is-danger" href="{{ url('steps/delete') }}/{{$step->id}}">Supprimer cette étape</button>
                             </td>
                                 
                         </tr>

@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\TravelController;
+use App\Http\Controllers\StepController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
