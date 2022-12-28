@@ -12,7 +12,7 @@ Renommer
 ```
 .env.example => .env
 ```
-Lancer
+Lancer si on a composer d'installé sur sa machine sinon suivre la procédure : https://laravel.com/docs/9.x/sail
 
 ```
 ./vendor/bin/sail up
