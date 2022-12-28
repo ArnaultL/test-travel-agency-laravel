@@ -93,6 +93,32 @@
             </div>
         </div>
     </div>
-    
+    <script>
+        (function(){
+            let counterStep = 0;
+            const addStepBtn = document.querySelector("#addStepBtn");
+            const boxStepContainer = document.querySelector("#box-step-container");
+            const boxStep = document.querySelector(".box-step");
+            const cloneBoxStep = () => {
+                counterStep++;
+                let clonedBoxStep = boxStep.cloneNode(true);
+                clonedBoxStep.childNodes.forEach(
+                    function(currentValue, currentIndex) {
+                        if(currentValue.hasChildNodes && (currentValue.childNodes.length == 5)) {
+                            let inputElement = currentValue.childNodes[3].childNodes[1];
+                            inputElement.name = inputElement.name.replace("[0]","["+counterStep+"]");
+                        }
+                    },
+                )
+                boxStepContainer.appendChild(clonedBoxStep);
+            }
+            addStepBtn.addEventListener(
+                "click",
+                (event) => {
+                    cloneBoxStep();
+                    event.preventDefault();
+                })
+        })();
+    </script>
 </body>
 </html>
