@@ -52,7 +52,14 @@
             <div class="field">
                 <label class="label">Type</label>
                 <div class="control">
-                    <input name="step[0][type]" class="input" type="text" placeholder="" required>
+                    <div class="select">
+                    <select class="typeSelector"name="step[0][type]">
+                        <option>Choisir le type d'étape</option>
+                        <?php foreach($allowedTypes as $frKeyType => $type): ?>
+                        <option value="{{ $type }}">{{ $frKeyType }}</option>
+                        <?php endforeach; ?>
+                    </select>
+                    </div>
                 </div>
             </div>
             <div class="field">
@@ -92,6 +99,20 @@
                 </div>
             </div>
         </div>
+        <div class="planeTypeFields">
+            <div class="field">
+                <label class="label">Gateway</label>
+                <div class="control">
+                    <input name="step[0][gateway]" class="input" type="text" placeholder="" required>
+                </div>
+            </div>
+            <div class="field">
+                <label class="label">Bagages</label>
+                <div class="control">
+                    <input name="step[0][bagage_drop]" class="input" type="text" placeholder="" required>
+                </div>
+            </div>
+        </div>
     </div>
     <script>
         (function(){
@@ -99,17 +120,48 @@
             const addStepBtn = document.querySelector("#addStepBtn");
             const boxStepContainer = document.querySelector("#box-step-container");
             const boxStep = document.querySelector(".box-step");
+            const planeStep = document.querySelector(".planeTypeFields");
             const cloneBoxStep = () => {
+                const iterateNameFieldsValue = (currentValue, currentIndex) =>  {
+                    if(currentValue.hasChildNodes && (currentValue.childNodes.length == 5)) {
+                        let inputElement = currentValue.childNodes[3].childNodes[1];
+                        if (inputElement.childNodes[1]) { //is a select field
+                            let selectElement = inputElement.childNodes[1];
+                            selectElement.name = selectElement.name.replace("[0]","["+counterStep+"]");
+                            addSpecificsPlaneFields(selectElement);
+                        } else {
+                            inputElement.name = inputElement.name.replace("[0]","["+counterStep+"]");
+                        }
+                    }
+                }
+                const addSpecificsPlaneFields = (selectElement) => {
+                    let clonedPlaneStep;
+                    selectElement.addEventListener(
+                        "change",
+                        (event) => {
+                            if (event.target.value == 'plane') {
+                                clonedPlaneStep = planeStep.cloneNode(true);
+                                clonedPlaneStep.childNodes.forEach(
+                                    (currentValue, currentIndex) => {
+                                        iterateNameFieldsValue(currentValue, currentIndex);
+                                    }
+                                );
+                                boxStepContainer.appendChild(clonedPlaneStep);
+                            } else {
+                                if (clonedPlaneStep) {
+                                    clonedPlaneStep.remove();
+                                }
+                            }
+                        }
+                    )
+                }
                 counterStep++;
                 let clonedBoxStep = boxStep.cloneNode(true);
                 clonedBoxStep.childNodes.forEach(
                     function(currentValue, currentIndex) {
-                        if(currentValue.hasChildNodes && (currentValue.childNodes.length == 5)) {
-                            let inputElement = currentValue.childNodes[3].childNodes[1];
-                            inputElement.name = inputElement.name.replace("[0]","["+counterStep+"]");
-                        }
+                        iterateNameFieldsValue(currentValue, currentIndex);
                     },
-                )
+                );
                 boxStepContainer.appendChild(clonedBoxStep);
             }
             addStepBtn.addEventListener(
@@ -117,7 +169,8 @@
                 (event) => {
                     cloneBoxStep();
                     event.preventDefault();
-                })
+                }
+            );
         })();
     </script>
 </body>

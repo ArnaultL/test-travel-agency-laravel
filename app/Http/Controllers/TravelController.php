@@ -9,6 +9,15 @@ use App\Models\Step;
 class TravelController extends Controller
 {
     /**
+     * Allowed translated type
+     */
+    protected static array $allowedTypes = [
+        'avion' =>'plane',
+        'train' => 'train',
+        'bus'   => 'bus'
+    ];
+
+    /**
      * Define view default route for travel
      *
      */
@@ -25,7 +34,9 @@ class TravelController extends Controller
      */
     public function addForm()
     {
-        return view('travel.add');
+        return view('travel.add', [
+            'allowedTypes' => self::$allowedTypes
+        ]);
     }
 
     /**
@@ -44,6 +55,8 @@ class TravelController extends Controller
             'step.*.arrival_date' => 'required|date',
             'step.*.departure' => 'required|string',
             'step.*.arrival' => 'required|string',
+            'step.*.gateway' => 'sometimes|required|string',
+            'step.*.bagage_drop' => 'sometimes|string',
         ]);
 
         $travel = new Travel();
@@ -54,9 +67,9 @@ class TravelController extends Controller
             foreach($travelAttributes['step'] as $stepAttributes) {
                 $step = $this->makeStepObject($stepAttributes);
                 $travel->steps()->save($step);
-                if ($step->type === "avion") {
+                if ($step->type === "plane") {
                     //Table per hierarchy
-                    $this->tphMapping($step);
+                    $this->tphMapping($step, $stepAttributes);
                 }
             }
         }
@@ -86,10 +99,11 @@ class TravelController extends Controller
      * Map the connexion with plane step optionals parameters
      * https://stackoverflow.com/questions/190296/how-do-you-effectively-model-inheritance-in-a-database#answer-190306
      */
-    protected function tphMapping(Step $step) {
+    protected function tphMapping(Step $step, array $stepAttributes): void
+    {
         $planeStep = new PlaneStep();
-        $planeStep->bagage_drop = $step->bagage_drop ?? null;
-        $planeStep->gateway = $step->gateway ?? 'NA';
+        $planeStep->bagage_drop = $stepAttributes['bagage_drop'] ?? null;
+        $planeStep->gateway = $stepAttributes['gateway'] ?? 'NA';
         $planeStep->step_id = $step->id;
         $planeStep->save();
     }
